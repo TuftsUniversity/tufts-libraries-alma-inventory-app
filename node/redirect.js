@@ -22,47 +22,32 @@ function handleError(res, message, error){
 
 function loadOrgs() {
   let orgs = [];
-  const dir = '/var/data/';
-  let regExp = new RegExp('^local\.prop\.(.*)');
-  fs.readdir(dir, (err, files) => {
-    if (err) {
-        throw err;
-    }
 
-    files.forEach(file => {
-      console.log('file:', file);
-      let matches = file.match(regExp);
-      if (matches) {
-        let org = matches[1]
-        console.log('org:', org);
-        let desc = getOrgInfo(org, 'Description');
-        console.log('desc:', desc);
+  var propPath = '/var/data/local.prop.orgs';
+  const ini_data = ini.parse(fs.readFileSync(propPath, 'utf-8'))
 
-        orgs.push( {
-            org: org,
-            desc: desc
-          }
-        );
+  for (let org of ini_data['orgs']) {
+    orgs.push( {
+        name: org,
+        apikey: ini_data[org]['ALMA_APIKEY'],
+        desc: ini_data[org]['DESCRIPTION'],
       }
-    });
-  });
-
+    );
+  }
+  //console.log('orgs: ', orgs);
   return orgs;
 }
 
-function getApiKey(org) {
-  return getOrgInfo(org, 'ALMA_APIKEY');
+function getApiKey(orgName) {
+  return getOrgInfo(orgName, 'apikey');
 }
 
-function getOrgInfo(org, name) {
-  var propPath = '/var/data/local.prop.' + org;
-  if(! fs.existsSync(propPath)) {
-    ts_log_error('File not found: ' + propPath);
-    return "";
+function getOrgInfo(orgName, varName) {
+  for (let org of orgs) {
+    if (orgName === org['name']) {
+      return org[varName];
+    }
   }
-
-  const ini_data = ini.parse(fs.readFileSync(propPath, 'utf-8'))
-  return ini_data[name];
 }
 
 // Constants

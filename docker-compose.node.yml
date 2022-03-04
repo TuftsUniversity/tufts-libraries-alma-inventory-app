@@ -6,8 +6,7 @@ services:
     ports:
       - 80:80
     volumes:
-      - "./local.prop.rmc:/var/data/local.prop.rmc"
-      - "./local.prop.mmc:/var/data/local.prop.mmc"
+      - "./local.prop.orgs:/var/data/local.prop.orgs"
       - "./gsheet.prop.json:/usr/src/app/gsheet.prop.json"
     tty: true
     stdin_open: true
