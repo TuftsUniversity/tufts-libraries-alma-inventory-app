@@ -7,6 +7,16 @@ const axios = require('axios');
 
 global.orgs = loadOrgs();
 
+
+function ts_log_access(req) {
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  ts_log(ip, req.url);
+}
+
+function ts_log(ip, url) {
+  console.log("%s\t%s\t%s", new Date(), ip, url);
+}
+
 function ts_log_error(str) {
   console.log(new Date(), str);
 }
@@ -59,8 +69,9 @@ app.set("view engine", "pug");
 
 
 app.get('/org/:org/redirect.js*', async (req, res) => {
+  ts_log_access(req);
   var APIKEY = getApiKey(req.params.org);
-  console.log('APIKEY = ' + APIKEY);
+  //console.log('APIKEY = ' + APIKEY);
 
   let qs = {
     'apikey': APIKEY
@@ -84,31 +95,30 @@ app.get('/org/:org/redirect.js*', async (req, res) => {
     ts_log_error(error);
     handleError(res, error.message);
   }
-
 });
 
 app.get('/org/:org/*', async (req, res) => {
+  ts_log_access(req);
   var url = require('url').parse(req.url);
   var urlPath = url.pathname;
-  console.log('');
-  console.log('Got url 1: ' + urlPath);
 
   var org = req.params.org;
   var oldUrl = urlPath;
-  console.log('Old url string: ' + oldUrl);
+  //console.log('Old url string: ' + oldUrl);
   let regExp = new RegExp('^/org/' + org + '[/]*');
   let newUrl = oldUrl.replace(regExp, '');
-  console.log('New url string: ' + newUrl);
+  //console.log('New url string: ' + newUrl);
   urlPath = newUrl;
 
-  console.log('Got url: ' + urlPath);
-  console.log('sendFile: ' + __dirname + "/" + urlPath);
+  //console.log('Got url: ' + urlPath);
+  //console.log('sendFile: ' + __dirname + "/" + urlPath);
+
   res.sendFile( __dirname + "/" + urlPath );
 });
 
 app.get('/*', async (req, res) => {
-  console.log('orgs:', orgs);
-  //res.sendFile( __dirname + "/select.html" );
+  //console.log('orgs:', orgs);
+  ts_log_access(req);
   res.render('select', { orgs: orgs });
 });
 
