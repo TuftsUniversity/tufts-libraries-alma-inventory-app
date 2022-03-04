@@ -10,15 +10,12 @@ global.orgs = loadOrgs();
 
 function ts_log_access(req) {
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-  ts_log(ip, req.url);
+  console.log("%s\t%s\t%s", new Date(), ip, req.url);
 }
 
-function ts_log(ip, url) {
-  console.log("%s\t%s\t%s", new Date(), ip, url);
-}
-
-function ts_log_error(str) {
-  console.log(new Date(), str);
+function ts_log_error(req, str) {
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  console.log("%s\t%s\t%s\t%s", new Date(), ip, req.url, str);
 }
 
 function handleError(res, message, error){
@@ -92,7 +89,7 @@ app.get('/org/:org/redirect.js*', async (req, res) => {
     res.json(ret.data);
     
   } catch (error) {
-    ts_log_error(error);
+    ts_log_error(req, error);
     handleError(res, error.message);
   }
 });
