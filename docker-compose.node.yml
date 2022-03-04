@@ -2,11 +2,12 @@ version: "3.3"
 
 services:
   alma-inventory:
-    image: terrywbrady/alma-inventory-node
+    image: cedelis/alma-inventory-node:0.2
     ports:
       - 80:80
     volumes:
-      - "./local.prop:/var/data/local.prop"
+      - "./local.prop.rmc:/var/data/local.prop.rmc"
+      - "./local.prop.mmc:/var/data/local.prop.mmc"
       - "./gsheet.prop.json:/usr/src/app/gsheet.prop.json"
     tty: true
     stdin_open: true

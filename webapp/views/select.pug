@@ -1,0 +1,10 @@
+html
+  head
+    title Select Your Institution
+    script(src='select.js')
+  body
+    h2 Please select your institution
+
+    each org in orgs
+      a(href='/org/' + org.org + '/') #{org.desc}
+      br

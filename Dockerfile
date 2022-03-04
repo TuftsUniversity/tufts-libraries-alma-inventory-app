@@ -7,6 +7,7 @@ WORKDIR /usr/src/app
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 # where available (npm@5+)
 COPY webapp/* /usr/src/app/
+COPY webapp/views/* /usr/src/app/views/
 COPY node/*.js /usr/src/app/
 COPY node/package*.json ./
 COPY gsheet.prop.json.template ./gsheet.prop.json
