@@ -452,7 +452,7 @@ function getButtonCell() {
 
 function restoreRow(rowarr) {
     if (rowarr == null) return;
-    if (rowarr.length != 12) return;
+    if (rowarr.length != 13) return;
 
     var barcode = rowarr.shift();
     var tr = getNewRow(false, barcode);
