@@ -104,6 +104,8 @@ $(document).ready(function(){
   colorInit();
   initDialogs();
   bindEvents();
+populateLibs();
+//populateLocs();
 
   var s = $("#test").val();
   if (s != "" && s!= null) {
@@ -177,6 +179,18 @@ function initDialogs() {
   });
 }
 
+
+function downloadToFile (content, filename, contentType) {
+  const a = document.createElement('a');
+  const file = new Blob([content], {type: contentType});
+  
+  a.href= URL.createObjectURL(file);
+  a.download = filename;
+  a.click();
+  
+  URL.revokeObjectURL(a.href);
+}
+
 /*
  * Bind Action Events to page
  */
@@ -213,7 +227,7 @@ function bindEvents() {
     var folderid = $("#mode").val() == "PROD" ? gsheet.props.folderid : gsheet.props.folderidtest;
     var ssname = makeSpreadsheetName();
     var nodes = $("#restable tr");
-    var buf = ssname + "\n" + $("#user").val() + "\n" + gsheet.makeCsv(nodes);
+    //var buf = ssname + "\n" + $("#user").val() + "\n" + gsheet.makeCsv(nodes);
     /*
     $.ajax({
       type: "PUT",
@@ -223,7 +237,9 @@ function bindEvents() {
     })
     */
 
-    gsheet.gsheet(nodes, ssname, folderid);
+downloadToFile(gsheet.makeCsv(nodes), ssname, 'text/csv');
+
+    //gsheet.gsheet(nodes, ssname, folderid);
     var msg = $("<div>Please confirm that <b>"+cnt+"</b> barcodes were successfully exported and saved to Google sheets.Click <b>OK</b> delete those barcodes from this page.</div>");
     mydialog("Clear Barcode Table?", msg, function() {
       $("tr.datarow").remove();
@@ -606,7 +622,9 @@ function parseResponse(barcode, json) {
       status_msg = "Empty call number. ";
     }
 
-    if (!LOC_REGEX.test(loc)) {
+    //if (!LOC_REGEX.test(loc)) {
+    let locSelected = $('#locSelected option:selected').val();
+    if (locSelected != loc) {
       status = (status == "PASS") ? "PULL-LOC" : "PULL-MULT";
       status_msg += LOC_MSG;
     }
@@ -820,3 +838,80 @@ function mydialog(title, mymessage, func) {
     }
   });
 }
+
+function populateLibs() {
+  // clear out first
+  $('#libSelected')
+    .find('option')
+    .remove()
+    .end();
+
+  var url = API_REDIRECT + "?apipath="+encodeURIComponent(API_SERVICE)+"conf/libraries";
+  $.getJSON(url, function(json){
+    var resdata = {}
+    if ('errorsExist' in json) {
+      var status_msg = "--";
+      var errorList = getArray(json, "errorList");
+      var errorArr = ('error' in errorList) ? errorList["error"] : [];
+      if (errorArr.length > 0) {
+        var error = errorArr[0];
+        status_msg = getValueWithDef(error, 'errorCode', "--") + ": "
+        status_msg += getValueWithDef(error, 'errorMessage', "--");
+      }
+      console.error(status_msg);
+    } else {
+      var libs = getArray(json, 'library');
+      for (let lib of libs) {
+        //console.log('lib=' + JSON.stringify(lib.name));
+        $('#libSelected').append($('<option>', { 
+            value: lib.code,
+            text : lib.name
+        }));
+      }
+      $("#libSelected").val($("#location option:first").val()).change();
+    }
+  }).fail(function() {
+    console.log('Failed to load libraries');
+  });
+
+
+}
+
+function populateLocs() {
+  // clear out first
+  $('#locSelected')
+    .find('option')
+    .remove()
+    .end();
+
+  let libId = $('#libSelected option:selected').val();
+  var url = API_REDIRECT + "?apipath="+encodeURIComponent(API_SERVICE)+"conf/libraries/" + libId + "/locations";
+  $.getJSON(url, function(json){
+    var resdata = {}
+    if ('errorsExist' in json) {
+      var status_msg = "--";
+      var errorList = getArray(json, "errorList");
+      var errorArr = ('error' in errorList) ? errorList["error"] : [];
+      if (errorArr.length > 0) {
+        var error = errorArr[0];
+        status_msg = getValueWithDef(error, 'errorCode', "--") + ": "
+        status_msg += getValueWithDef(error, 'errorMessage', "--");
+      }
+      console.error(status_msg);
+    } else {
+      var locs = getArray(json, 'location');
+      for (let loc of locs) {
+        $('#locSelected').append($('<option>', { 
+            value: loc.code,
+            text : loc.name + ' (' + loc.code + ')'
+        }));
+      }
+  
+      $("#locSelected").val($("#location option:first").val()).change();
+    }
+  }).fail(function() {
+    console.log('Failed to load locations');
+  });
+}
+
+

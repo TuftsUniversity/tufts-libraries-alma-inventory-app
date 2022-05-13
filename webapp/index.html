@@ -67,10 +67,12 @@ Author: Terry Brady, Georgetown University Libraries
 </div>
 
 <div id="main">
+  Library: <select id="libSelected" name="libSelected" size="1" onchange="populateLocs()"></select><br/>
+  Location: <select id="locSelected" name="locSelected" size="1"></select><br/>
   <span id='gsheetdiv'>
     <a id='legend-button' href="#">Legend</a>
     <a id="addb" href="#">Add Barcode</a>
-    <a id="exportGsheet" href="#">End Session - Export to Google Sheet</a>
+    <a id="exportGsheet" href="#">End Session - Download CSV File</a>
   </span>
 <div>
 <table id='restable'>
