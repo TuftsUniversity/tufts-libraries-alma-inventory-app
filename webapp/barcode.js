@@ -156,6 +156,10 @@ function initDialogs() {
           dialogBulk.dialog("close");
           dialog.dialog("close");
           for (var i = 0; i < codeArr.length; i++) {
+            if (isDuplicateBarcode(codeArr[i])) {
+              console.log('DUPLICATE barcode=' + codeArr[i] + ' ; Skipping...');
+              continue;
+            }
             addBarcode(codeArr[i], false);
           }
         });
