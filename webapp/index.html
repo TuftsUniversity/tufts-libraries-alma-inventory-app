@@ -62,6 +62,7 @@ Author: Terry Brady, Georgetown University Libraries
   <form>
     <div><label for="name">Barcode List</label></div>
     <textarea name="barcodes" id="barcodes" rows="10" cols="16"></textarea>
+    <input type="button" id="loadBarcodes" href="#" value="Load Barcodes From CSV">
   </form>
   </fieldset>
 </div>
@@ -72,7 +73,8 @@ Author: Terry Brady, Georgetown University Libraries
   <span id='gsheetdiv'>
     <a id='legend-button' href="#">Legend</a>
     <a id="addb" href="#">Add Barcode</a>
-    <a id="exportGsheet" href="#">End Session - Download CSV File</a>
+    <a id="downloadCsv" href="#">End Session - Download CSV File</a>
+    <a id="exportGsheet" href="#">End Session - Export to Google Sheet</a>
   </span>
 <div>
 <table id='restable'>

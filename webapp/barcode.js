@@ -195,6 +195,57 @@ function downloadToFile (content, filename, contentType) {
   URL.revokeObjectURL(a.href);
 }
 
+
+
+// https://stackoverflow.com/questions/12484386/access-javascript-property-case-insensitively
+/**
+  * @param {Object} object
+  * @param {string} key
+  * @return {any} value
+ */
+function getParameterCaseInsensitive(object, key) {
+  const asLowercase = key.toLowerCase();
+  return object[Object.keys(object)
+    .find(k => k.toLowerCase() === asLowercase)
+  ];
+}
+
+// Based on https://sebhastian.com/javascript-csv-to-array/
+// (just added code to remove any quotes around headers and values in CSV
+function csvToArray(str, delimiter = ",") {
+  // slice from start of text to the first \n index
+  // use split to create an array from string by delimiter
+  const headers = str.slice(0, str.indexOf("\n")).split(delimiter);
+
+  // slice from \n index + 1 to the end of the text
+  // use split to create an array of each csv value row
+  const rows = str.slice(str.indexOf("\n") + 1).split("\n");
+
+  // Map the rows
+  // split values from each row into an array
+  // use headers.reduce to create an object
+  // object properties derived from headers:values
+  // the object passed as an element of the array
+  const arr = rows.map(function (row) {
+    const values = row.split(delimiter);
+    const el = headers.reduce(function (object, header, index) {
+      let header2 = header;
+      header2 = header2.replace(/^['"]+/g, '');
+      header2 = header2.replace(/['"]+$/g, '');
+      let value2 = values[index];
+      value2= value2.replace(/^['"]+/g, '');
+      value2= value2.replace(/['"]+$/g, '');
+      object[header2] = value2;
+      return object;
+    }, {});
+    return el;
+  });
+
+  // return the array
+  return arr;
+}
+
+
 /*
  * Bind Action Events to page
  */
@@ -216,6 +267,57 @@ function bindEvents() {
   //Trigger barcode format validation during text entry
   $("#barcode").on("keyup", function(){valBarcode()});
   $("#barcode").on("change", function(){valBarcode()});
+
+  $("#loadBarcodes").on("click", function(){
+    let input = document.createElement('input');
+    input.type = 'file';
+    input.onchange = _this => {
+              let files =   Array.from(input.files);
+              //console.log(files);
+              const reader = new FileReader();
+              reader.onload = function (event) {
+                //console.log(event.target.result); // the CSV content as string
+                const data = csvToArray(event.target.result);
+                let barcodes = '';
+                let i = 0;
+                for (let line of data) {
+                  let b = '';
+                  b=getParameterCaseInsensitive(line, 'barcode');
+                  if (b === undefined) b=getParameterCaseInsensitive(line, 'barcodes');
+                  if (b === undefined) {
+                    console.log('barcode is undefined');
+                  }
+                  //console.log('b=' + b);
+                  if (i++ > 0) barcodes += "\n";
+                  barcodes += b;
+                }
+                $("#barcodes").val(barcodes);
+              };
+              reader.readAsText(files[0]);
+          };
+    input.click();
+  });
+
+  $("#downloadCsv").on("click", function(){
+    var cnt = $("tr.datarow").length;
+    if (cnt == 0) {
+      var msg = $("<div>There is no data to export.  Please scan some barcodes</div>");
+      mydialog("No data available", msg, function() {
+        barcodeDialog();
+      });
+      return;
+    }
+
+    var ssname = makeSpreadsheetName();
+    var nodes = $("#restable tr");
+    downloadToFile(gsheet.makeCsv(nodes), ssname, 'text/csv');
+    var msg = $("<div>Please confirm that <b>"+cnt+"</b> barcodes were successfully exported and saved to Google sheets.Click <b>OK</b> delete those barcodes from this page.</div>");
+    mydialog("Clear Barcode Table?", msg, function() {
+      $("tr.datarow").remove();
+      autosave();
+      barcodeDialog();
+    });
+  });
 
   //Activate export to Google Sheets function
   $("#exportGsheet").on("click", function(){
@@ -241,9 +343,7 @@ function bindEvents() {
     })
     */
 
-downloadToFile(gsheet.makeCsv(nodes), ssname, 'text/csv');
-
-    //gsheet.gsheet(nodes, ssname, folderid);
+    gsheet.gsheet(nodes, ssname, folderid);
     var msg = $("<div>Please confirm that <b>"+cnt+"</b> barcodes were successfully exported and saved to Google sheets.Click <b>OK</b> delete those barcodes from this page.</div>");
     mydialog("Clear Barcode Table?", msg, function() {
       $("tr.datarow").remove();
