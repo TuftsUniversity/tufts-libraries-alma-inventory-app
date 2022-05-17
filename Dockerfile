@@ -18,6 +18,7 @@ WORKDIR /usr/src/app
 # where available (npm@5+)
 COPY webapp/* /usr/src/app/
 COPY webapp/views/* /usr/src/app/views/
+COPY webapp/images/* /usr/src/app/images/
 COPY node/*.js /usr/src/app/
 COPY node/package*.json ./
 COPY gsheet.prop.json.template ./gsheet.prop.json
