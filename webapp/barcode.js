@@ -104,8 +104,7 @@ $(document).ready(function(){
   colorInit();
   initDialogs();
   bindEvents();
-populateLibs();
-//populateLocs();
+  populateLibs();
 
   var s = $("#test").val();
   if (s != "" && s!= null) {
@@ -114,10 +113,10 @@ populateLibs();
     if (localStorage.barcodes != "" && localStorage.barcodes != null) {
       restoreAutoSaveBarcodes()
     } else {
-      barcodeDialog();
+      //barcodeDialog();
     }
   } else {
-    barcodeDialog();
+    //barcodeDialog();
   }
 });
 
@@ -196,56 +195,6 @@ function downloadToFile (content, filename, contentType) {
 }
 
 
-
-// https://stackoverflow.com/questions/12484386/access-javascript-property-case-insensitively
-/**
-  * @param {Object} object
-  * @param {string} key
-  * @return {any} value
- */
-function getParameterCaseInsensitive(object, key) {
-  const asLowercase = key.toLowerCase();
-  return object[Object.keys(object)
-    .find(k => k.toLowerCase() === asLowercase)
-  ];
-}
-
-// Based on https://sebhastian.com/javascript-csv-to-array/
-// (just added code to remove any quotes around headers and values in CSV
-function csvToArray(str, delimiter = ",") {
-  // slice from start of text to the first \n index
-  // use split to create an array from string by delimiter
-  const headers = str.slice(0, str.indexOf("\n")).split(delimiter);
-
-  // slice from \n index + 1 to the end of the text
-  // use split to create an array of each csv value row
-  const rows = str.slice(str.indexOf("\n") + 1).split("\n");
-
-  // Map the rows
-  // split values from each row into an array
-  // use headers.reduce to create an object
-  // object properties derived from headers:values
-  // the object passed as an element of the array
-  const arr = rows.map(function (row) {
-    const values = row.split(delimiter);
-    const el = headers.reduce(function (object, header, index) {
-      let header2 = header;
-      header2 = header2.replace(/^['"]+/g, '');
-      header2 = header2.replace(/['"]+$/g, '');
-      let value2 = values[index];
-      value2= value2.replace(/^['"]+/g, '');
-      value2= value2.replace(/['"]+$/g, '');
-      object[header2] = value2;
-      return object;
-    }, {});
-    return el;
-  });
-
-  // return the array
-  return arr;
-}
-
-
 /*
  * Bind Action Events to page
  */
@@ -277,17 +226,28 @@ function bindEvents() {
               const reader = new FileReader();
               reader.onload = function (event) {
                 //console.log(event.target.result); // the CSV content as string
-                const data = csvToArray(event.target.result);
+                const data = $.csv.toObjects(event.target.result);
                 let barcodes = '';
                 let i = 0;
                 for (let line of data) {
                   let b = '';
-                  b=getParameterCaseInsensitive(line, 'barcode');
-                  if (b === undefined) b=getParameterCaseInsensitive(line, 'barcodes');
-                  if (b === undefined) {
+                  if (line['barcode']) {
+                    b = line['barcode'];
+                  } else if (line['barcodes']) {
+                    b = line['barcodes'];
+                  } else if (line['Barcode']) {
+                    b = line['Barcode'];
+                  } else if (line['Barcodes']) {
+                    b = line['Barcodes'];
+                  } else {
                     console.log('barcode is undefined');
                   }
                   //console.log('b=' + b);
+                  if (b.match(/^="[0-9]+"$/)) {
+                    b = b.replace(/^="/, "");
+                    b = b.replace(/"$/, "");
+                    //console.log('b=' + b);
+                  }
                   if (i++ > 0) barcodes += "\n";
                   barcodes += b;
                 }
@@ -308,10 +268,17 @@ function bindEvents() {
       return;
     }
 
-    var ssname = makeSpreadsheetName();
+    var ssname = makeSpreadsheetName() + '.csv';
     var nodes = $("#restable tr");
-    downloadToFile(gsheet.makeCsv(nodes), ssname, 'text/csv');
-    var msg = $("<div>Please confirm that <b>"+cnt+"</b> barcodes were successfully exported and saved to Google sheets.Click <b>OK</b> delete those barcodes from this page.</div>");
+    var csv = gsheet.makeCsv(nodes);
+    csv = csv.replace(/\r/g, "");
+    var lines = csv.split("\n");
+    var csvReversed = "";
+    for(var i=1; i<lines.length; i++)
+        csvReversed = lines[i] + "\n" + csvReversed;
+    csvReversed = lines[0] + "\n" + csvReversed;
+    downloadToFile(csvReversed, ssname, 'text/csv');
+    var msg = $("<div>Please confirm that <b>"+cnt+"</b> barcodes were successfully exported. Click <b>OK</b> delete those barcodes from this page.</div>");
     mydialog("Clear Barcode Table?", msg, function() {
       $("tr.datarow").remove();
       autosave();

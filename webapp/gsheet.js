@@ -26,7 +26,7 @@ var GSheet = function(proppath) {
     this.makeCsv = function(rows) {
         var itemdata = "";
         rows.each(function(rownum, row){
-            itemdata += (rownum == 0) ? "" : "\r\n";
+            itemdata += (rownum == 0) ? "" : "\n";
             $(row).find("td:not('.noexport'),th:not('.noexport')").each(function(colnum, col){
                 itemdata += self.exportCol(colnum, col);
             });
@@ -71,12 +71,28 @@ var GSheet = function(proppath) {
     }
 
     this.exportCell = function(col) {
+        // In order for Excel to process long numbers,
+        // we need to format it like so:
+        // "=""37611000096017"""
+        // or it will look something like this:
+        // 3.7611E+13
+        var preserveLongNumber = false;
+        if ($(col).hasClass("barcode")
+        ||  $(col).hasClass("record_num")) {
+                preserveLongNumber = true;
+        }
         data = "\"";
         $(col).contents().each(function(i, node){
             if ($(node).is("hr")) {
                 data += "||";
             } else {
+                if (preserveLongNumber) {
+                    data += "=\"\"";
+                }
                 data += $(node).text().replace(/\n/g," ").replace(/"/g,"\"\"").replace(/\s/g," ");
+                if (preserveLongNumber) {
+                    data += "\"\"";
+                }
                 if ($(node).is("div:not(:last-child)")) {
                     data += "||";
                 }
