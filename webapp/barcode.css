@@ -82,3 +82,8 @@ td, th {width: 100px;}
 td.error {color: red;background-color: yellow;}
 td.title, th.title {width: 300px;}
 td.mod, th.mod {width: 200px;}
+
+
+table.location {border: none;}
+tr.location {border: none;}
+td.location {border: none;}

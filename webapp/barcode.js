@@ -113,10 +113,10 @@ $(document).ready(function(){
     if (localStorage.barcodes != "" && localStorage.barcodes != null) {
       restoreAutoSaveBarcodes()
     } else {
-      //barcodeDialog();
+      barcodeDialog();
     }
   } else {
-    //barcodeDialog();
+    barcodeDialog();
   }
 });
 

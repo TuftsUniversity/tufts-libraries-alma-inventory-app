@@ -38,6 +38,19 @@ Author: Terry Brady, Georgetown University Libraries
 <div id="legend-div"></div>
 <div id="dialog-form" title="Add Barcode">
   <fieldset>
+  <table class="location">
+    <tr>
+      <td class="location" align="right"><label for="libSelected">Library:</label></td>
+      <td class="location" align="left"><select id="libSelected" name="libSelected" size="1" onchange="populateLocs()"></select></td>
+    </tr>
+    <tr>
+      <td class="location" align="right"><label for="locSelected">Location:</label></td>
+      <td class="location" align="left"><select id="locSelected" name="locSelected" size="1"></select></td>
+    </tr>
+  </table>
+  </fieldset>
+  <br/>
+  <fieldset>
   <label>Last barcode scanned:</label>
   <span id="lastbarcode"></span>
   <span id="laststatus"></span>
@@ -56,7 +69,7 @@ Author: Terry Brady, Georgetown University Libraries
   <p class="validateTips" id="message">Scan the next barcode.</p>
   <form>
     <fieldset>
-      <label for="name">Barcode</label>
+      <label for="barcode">Barcode</label>
       <input type="text" name="barcode" id="barcode" value="" class="text ui-widget-content ui-corner-all">
       <button id="doBulk" title="Bulk Add Barcodes by Copy/Paste" type="button">...</button>
 
@@ -68,7 +81,7 @@ Author: Terry Brady, Georgetown University Libraries
 <div id="dialog-bulk" title="Bulk Add Barcodes">
   <fieldset>
   <form>
-    <div><label for="name">Barcode List</label></div>
+    <div><label for="barcodes">Barcode List</label></div>
     <textarea name="barcodes" id="barcodes" rows="10" cols="16"></textarea>
     <input type="button" id="loadBarcodes" href="#" value="Load Barcodes From CSV File">
   </form>
@@ -76,8 +89,6 @@ Author: Terry Brady, Georgetown University Libraries
 </div>
 
 <div id="main">
-  Library: <select id="libSelected" name="libSelected" size="1" onchange="populateLocs()"></select><br/>
-  Location: <select id="locSelected" name="locSelected" size="1"></select><br/>
   <span id='gsheetdiv'>
     <a id='legend-button' href="#">Legend</a>
     <a id="addb" href="#">Add Barcode</a>
