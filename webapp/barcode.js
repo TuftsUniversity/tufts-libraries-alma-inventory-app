@@ -229,24 +229,26 @@ function bindEvents() {
                 const data = $.csv.toObjects(event.target.result);
                 let barcodes = '';
                 let i = 0;
+                let barcode_key = 'barcode';
                 for (let line of data) {
+                  if (i == 0) {
+                    for (k in line) {
+                      let matches = k.match(/^(barcode[s]*)$/i);
+                      if (matches && matches.length > 0) {
+                        barcode_key = matches[0];
+                      }
+                    }
+                  }
                   let b = '';
-                  if (line['barcode']) {
-                    b = line['barcode'];
-                  } else if (line['barcodes']) {
-                    b = line['barcodes'];
-                  } else if (line['Barcode']) {
-                    b = line['Barcode'];
-                  } else if (line['Barcodes']) {
-                    b = line['Barcodes'];
+                  if (line[barcode_key]) {
+                    b = line[barcode_key];
                   } else {
                     console.log('barcode is undefined');
+                    continue;
                   }
-                  //console.log('b=' + b);
                   if (b.match(/^="[0-9]+"$/)) {
                     b = b.replace(/^="/, "");
                     b = b.replace(/"$/, "");
-                    //console.log('b=' + b);
                   }
                   if (i++ > 0) barcodes += "\n";
                   barcodes += b;
