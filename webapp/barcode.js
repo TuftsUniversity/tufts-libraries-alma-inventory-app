@@ -52,17 +52,17 @@ var sr=1;
 var STAT_FAIL = "FAIL";
 var COLORMAP = [
   {status: "PASS",       color: "white",        nickname: "white",           desc: "Information is valid.  No action required."},
-  {status: STAT_FAIL,    color: "pink",         nickname: "pink",            desc: "Retrieval failed.  Try to refresh again.  File a ticket with LIT if the issue persists."},
-  {status: "NOT-FOUND",  color: "coral",        nickname: "red",             desc: "No Alma data for barcode.  Attach flag and pull item."},
-  {status: "META-CALL",  color: "darkorange",   nickname: "electric orage",  desc: "Bad Call Number.  Attach flag and send to Metadata Services for correction."},
-  {status: "META-TTL",   color: "lightskyblue", nickname: "blue",            desc: "Bad Title.  Attach flag and send to Metadata Services for correction."},
-  {status: "META-VOL",   color: "lightgreen",   nickname: "mint green",      desc: "Bad Volume.  Attach flag and send to Metadata Services for correction."},
-  {status: "PULL-STAT",  color: "goldenrod",    nickname: "goldenrod",       desc: "Incorrect status code. Attach flag and pull item.  Send to Access Services for correction."},
-  {status: "PULL-LOC",   color: "yellow",       nickname: "yellow",          desc: "Incorrect location. Attach flag and pull item.  Send to Access Services for correction."},
-  {status: "PULL-SUPP",  color: "tan",          nickname: "tan",             desc: "Bib is marked as suppressed. Attach flag and pull item.  Send to Access Services for correction."},
-  {status: "PULL-HSUPP", color: "violet",       nickname: "purple",          desc: "Holding is suppressed. Attach flag and pull item.  Send to Access Services for correction."},
-  {status: "PULL-DUE",   color: "chartreuse",   nickname: "electric green",  desc: "Item is checked out in ALma. Attach flag and pull item.  Send to Access Services for correction."},
-  {status: "PULL-MULT",  color: "grey",         nickname: "grey",            desc: "Multiple issues. Attach flags and pull item.  Send to Access Services for correction."},
+  {status: STAT_FAIL,    color: "pink",         nickname: "pink",            desc: "Retrieval failed.  Try to refresh again.  File a ticket with <a href=\"mailto:support@carli.illinois.edu\">CARLI Support</a> if the issue persists."},
+  {status: "NOT-FOUND",  color: "coral",        nickname: "red",             desc: "No Alma data for barcode."},
+  {status: "META-CALL",  color: "darkorange",   nickname: "electric orage",  desc: "Bad Call Number."},
+  {status: "META-TTL",   color: "lightskyblue", nickname: "blue",            desc: "Bad Title."},
+  {status: "META-VOL",   color: "lightgreen",   nickname: "mint green",      desc: "Bad Volume."},
+  {status: "PULL-STAT",  color: "goldenrod",    nickname: "goldenrod",       desc: "Incorrect status code."},
+  {status: "PULL-LOC",   color: "yellow",       nickname: "yellow",          desc: "Incorrect location."},
+  {status: "PULL-SUPP",  color: "tan",          nickname: "tan",             desc: "Bib is marked as suppressed."},
+  {status: "PULL-HSUPP", color: "violet",       nickname: "purple",          desc: "Holding is suppressed."},
+  {status: "PULL-DUE",   color: "chartreuse",   nickname: "electric green",  desc: "Item is checked out in ALma."},
+  {status: "PULL-MULT",  color: "grey",         nickname: "grey",            desc: "Multiple issues."},
 ];
 var STATUSES = [];
 
