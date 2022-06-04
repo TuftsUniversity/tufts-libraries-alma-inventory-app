@@ -28,6 +28,20 @@ Author: Terry Brady, Georgetown University Libraries
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <script type="text/javascript" src="gsheet.js"></script>
 <script type="text/javascript" src="barcode.init.js"></script>
+<script type="text/javascript">
+  $(document).ready(function(){
+      var orgMatch = window.location.pathname.match(/^\/org\/([^\/]+)/);
+      if (orgMatch) {
+        var org = orgMatch[1];
+        var barcodeJS = org + '_barcode.init.js';
+        $.getScript(barcodeJS, function( data, textStatus, jqxhr ) {
+            console.log('Successfully loaded ' + barcodeJS + '.');
+        }).fail(function(){
+            console.log('Unable to load ' + barcodeJS + ' -- using default settings.');
+        });
+      }
+    });
+</script> 
 <script type="text/javascript" src="barcode.js"></script>
 <script type="text/javascript" src="locCallClass.js"></script>
 </head>
