@@ -832,7 +832,13 @@ function setLcSortStat(tr) {
   var tdcall = tr.find("td.call_number");
   tdcall.removeClass("lcfirst lcequal lcnext lcprev");
   var call_number = tdcall.text();
-  var lcsorter = new locCallClass();
+  var lcsorter = null;
+  let cnType = $('#cnType option:selected').val();
+  if (cnType == "dewey") {
+    lcsorter = new deweyCallClass();
+  } else {
+    lcsorter = new locCallClass();
+  }
   var normlc = "";
   try {
     normlc = lcsorter.returnNormLcCall(call_number);

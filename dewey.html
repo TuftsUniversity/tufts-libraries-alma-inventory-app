@@ -1,0 +1,37 @@
+<html>
+<head>
+
+<script type="text/javascript" src="deweyCallClass.js"></script>
+
+<script language="JavaScript">
+
+var callnumbers = new Array(
+'230.2 B277e 2015',
+'231.09 H967o',
+'232 M934s',
+'232.09 L975c 2016',
+'233.5 R725s',
+'233.5 V431i',
+'233.5 Y21i 2004'
+);
+
+
+function sortIt() {
+
+var lcsorter = new deweyCallClass();
+
+for (var i=0; i<callnumbers.length; i++) {
+  console.log('before-->' + callnumbers[i] + '<--');
+  var normlc = lcsorter.returnNormLcCall(callnumbers[i]);
+  console.log(' after-->' + normlc + '<--');
+}
+}
+
+
+</script>
+
+</head>
+<body onLoad="sortIt()">
+Hi there
+</body>
+</html>

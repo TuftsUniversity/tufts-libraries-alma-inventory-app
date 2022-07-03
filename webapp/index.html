@@ -45,10 +45,17 @@ Author: Terry Brady, Georgetown University Libraries
 </script> 
 <script type="text/javascript" src="barcode.js"></script>
 <script type="text/javascript" src="locCallClass.js"></script>
+<script type="text/javascript" src="deweyCallClass.js"></script>
 </head>
 <body>
 <h2>Alma Interactive Inventory Scanning Tool</h2>
 <h4>CARLI provides this tool for I-Share Libraries. Please see <a href="https://www.carli.illinois.edu/products-services/i-share/external-system/GeorgetownInventory">CARLI’s documentation page</a> on this tool, and contact <a href="mailto:support@carli.illinois.edu">CARLI Support</a> with any questions.</h4>
+
+<div>
+  <label for="cnType">Call Number Type:</label><select id="cnType" name="cnType" size="1"><option value="lc">LC</option>LC<option value="dewey">Dewey</option></select>
+</div>
+
+
 <input id="test" type="hidden"/>
 <input id="mode" type="hidden"/>
 <input id="user" type="hidden"/>
