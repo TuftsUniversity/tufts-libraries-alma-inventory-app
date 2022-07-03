@@ -50,12 +50,6 @@ Author: Terry Brady, Georgetown University Libraries
 <body>
 <h2>Alma Interactive Inventory Scanning Tool</h2>
 <h4>CARLI provides this tool for I-Share Libraries. Please see <a href="https://www.carli.illinois.edu/products-services/i-share/external-system/GeorgetownInventory">CARLI’s documentation page</a> on this tool, and contact <a href="mailto:support@carli.illinois.edu">CARLI Support</a> with any questions.</h4>
-
-<div>
-  <label for="cnType">Call Number Type:</label><select id="cnType" name="cnType" size="1"><option value="lc">LC</option>LC<option value="dewey">Dewey</option></select>
-</div>
-
-
 <input id="test" type="hidden"/>
 <input id="mode" type="hidden"/>
 <input id="user" type="hidden"/>
@@ -71,6 +65,10 @@ Author: Terry Brady, Georgetown University Libraries
     <tr>
       <td class="location" align="right"><label for="locSelected">Location:</label></td>
       <td class="location" align="left"><select id="locSelected" name="locSelected" size="1"></select></td>
+    </tr>
+    <tr>
+      <td class="location" align="right"><label for="cnType">Call Number Type:</label></td>
+      <td class="location" align="left"><select id="cnType" name="cnType" size="1"><option value="lc">LC</option>LC<option value="dewey">Dewey</option></select></td>
     </tr>
   </table>
   </fieldset>
