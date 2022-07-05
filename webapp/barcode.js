@@ -810,8 +810,17 @@ function processCodes(show) {
     setLcSortStat(tr);
 
     setRowStatus(tr, tr.find("td.status").text(), null, show);
-  }).fail(function() {
-    setRowStatus(tr, STAT_FAIL, "Connection Error", show);
+  }).fail(function(jqXHR, textStatus, errorThrown) {
+        //console.log("jqXHR " + jqXHR.status);
+        //console.log("error " + textStatus);
+        //console.log("incoming Text " + jqXHR.responseText);
+    // Alma API returns a 400 for item not found, but jqXHR has status of 404. Hmm...
+    //<web_service_result xmlns="http://com/exlibris/urm/general/xmlbeans"><errorsExist>true</errorsExist><errorList><error><errorCode>401689</errorCode><errorMessage>No items found for barcode 1111111.</errorMessage><trackingId>E01-0507194331-VBF53-AWAE209511337</trackingId></error></errorList></web_service_result>
+    if (jqXHR.status == 404) {
+      setRowStatus(tr, "NOT-FOUND", "--", show);
+    } else {
+      setRowStatus(tr, STAT_FAIL, "Connection Error", show);
+    }
   });
 }
 
