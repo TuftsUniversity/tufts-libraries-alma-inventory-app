@@ -300,7 +300,7 @@ function bindEvents() {
     }
 
     var folderid = $("#mode").val() == "PROD" ? gsheet.props.folderid : gsheet.props.folderidtest;
-    var ssname = makeSpreadsheetName();
+    var ssname = window.location.pathname.match(/^\/org\/([^\/]+)/)[1] + '_' + makeSpreadsheetName();
     var nodes = $("#restable tr");
     //var buf = ssname + "\n" + $("#user").val() + "\n" + gsheet.makeCsv(nodes);
     /*
