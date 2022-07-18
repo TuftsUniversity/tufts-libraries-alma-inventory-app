@@ -184,13 +184,18 @@ function initDialogs() {
 
 
 function downloadToFile (content, filename, contentType) {
+  var popup = window.open(); 
+
   const a = document.createElement('a');
   const file = new Blob([content], {type: contentType});
   
   a.href= URL.createObjectURL(file);
   a.download = filename;
+
+  popup.document.body.appendChild(a); 
+
   a.click();
-  
+
   URL.revokeObjectURL(a.href);
 }
 
