@@ -1,4 +1,6 @@
-# AlmaInventory
+# AlmaInventory INTERACIVE
+
+
 This code will facilitate an inventory of items cataloged in the Alma integrated library system.
 
 - Physical items are handled one at a time and scanned with a barcode scanner
