@@ -1,6 +1,5 @@
-# AlmaInventory
+# AlmaInventory INTERACIVE
 
-[INTERACTIVE] 
 
 This code will facilitate an inventory of items cataloged in the Alma integrated library system.
 
