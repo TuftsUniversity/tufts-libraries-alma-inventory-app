@@ -625,7 +625,7 @@ function updateRowStat(tr) {
 
 
 function getBarcodeFromUrl(url) {
-  var match = /.*item_barcode=([0-9\-]+)$/.exec(url);
+  var match = /.*item_barcode=(.+)$/.exec(url);
   if (match == null) {
     return "";
   }
