@@ -487,6 +487,9 @@ function addCurrentBarcode() {
   $("#bcCall").text("");
   $("#bcTitle").text("");
   $("#bcVol").text("");
+  if ($('#beep').is(":checked")) {
+    beep();
+  }
   var v = $("#barcode").val();
   addBarcode(v, true);
   $("#barcode").val("").focus();

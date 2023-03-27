@@ -19,6 +19,7 @@ Author: Terry Brady, Georgetown University Libraries
 <link rel="stylesheet" type="text/css" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.css"></link>
 -->
 <meta name="robots" content="noindex">
+<script	src="beep.js"></script>
 <script	src="jquery-1.7.2.min.js"></script>
 <script src="jquery-ui-1.9.1.min.js"></script>
 <script src="jquery.csv-0.71.min.js"></script>
@@ -95,6 +96,7 @@ Author: Terry Brady, Georgetown University Libraries
       <label for="barcode">Barcode</label>
       <input type="text" name="barcode" id="barcode" value="" class="text ui-widget-content ui-corner-all">
       <button id="doBulk" title="Bulk Add Barcodes by Copy/Paste" type="button">...</button>
+      <input type="checkbox" name="beep" id="beep" value="" class="text ui-widget-content ui-corner-all">&#128276;
 
       <!-- Allow form submission with keyboard without duplicating the dialog button -->
       <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">

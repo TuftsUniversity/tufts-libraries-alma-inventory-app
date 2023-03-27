@@ -1,0 +1,33 @@
+<html>
+<head>
+</head>
+<body>
+
+<label>Frequency</label><br>
+<input type="range" min="35" max="4000" value="440" id="frecuency">
+<br>
+<label>Duration (milliseconds)</label><br>
+<input type="number" step="100" min="200" max="5000" value="200" id="duration">
+<br>
+<label>Volume (%)</label><br>
+<input type="range" step="1" min="0" max="100" value="100" id="volume">
+<br>
+<br>
+<input type="button" id="btn" value="Play Beep Sound"/>
+
+<script	src="beep.js"></script>
+<script>
+document.getElementById("btn").addEventListener("click", function(){
+
+  console.log('on click');
+
+	beep(
+  	document.getElementById("duration").value,
+    document.getElementById("frecuency").value,
+    document.getElementById("volume").value,
+  );
+
+}, false);
+</script>
+</body>
+</html>
