@@ -54,7 +54,7 @@ var COLORMAP = [
   {status: "PASS",       color: "white",        nickname: "white",           desc: "Information is valid.  No action required."},
   {status: STAT_FAIL,    color: "pink",         nickname: "pink",            desc: "Retrieval failed.  Try to refresh again.  File a ticket with <a href=\"mailto:support@carli.illinois.edu\">CARLI Support</a> if the issue persists."},
   {status: "NOT-FOUND",  color: "coral",        nickname: "red",             desc: "No Alma data for barcode."},
-  {status: "META-CALL",  color: "darkorange",   nickname: "electric orage",  desc: "Bad Call Number."},
+  {status: "META-CALL",  color: "darkorange",   nickname: "electric orange",  desc: "Bad Call Number."},
   {status: "META-TTL",   color: "lightskyblue", nickname: "blue",            desc: "Bad Title."},
   {status: "META-VOL",   color: "lightgreen",   nickname: "mint green",      desc: "Bad Volume."},
   {status: "PULL-STAT",  color: "goldenrod",    nickname: "goldenrod",       desc: "Incorrect status code."},
@@ -487,9 +487,6 @@ function addCurrentBarcode() {
   $("#bcCall").text("");
   $("#bcTitle").text("");
   $("#bcVol").text("");
-  if ($('#beep').is(":checked")) {
-    beep();
-  }
   var v = $("#barcode").val();
   addBarcode(v, true);
   $("#barcode").val("").focus();
@@ -598,6 +595,10 @@ function setRowStatus(tr, status, status_msg, show) {
   tr.addClass(status);
   if (status_msg != null) tr.find("td.status_msg").text(status_msg);
   tr.addClass(status);
+  console.log('setRowStatus', status);
+  if (status != 'PASS') {
+    soundBeep();
+  }
   autosave();
   processCodes(show);
   if ($("#lastbarcode").text() == tr.attr("barcode")) {
@@ -756,6 +757,12 @@ function parseResponse(barcode, json) {
   return resdata;
 }
 
+function soundBeep() {
+  if ($('#beep').is(":checked")) {
+    beep();
+  }
+}
+
 /*
  * Process new rows
  *   show - boolean - whether or not to display the add barcode dialog
@@ -775,9 +782,10 @@ function processCodes(show) {
   tr.removeClass("new").addClass("processing");
   var barcode = tr.attr("barcode");
 
-  //If barcoe is invalid, mark with a status of "FAIL"
+  //If barcode is invalid, mark with a status of "FAIL"
   if (!isValidBarcode(barcode)) {
     setRowStatus(tr, STAT_FAIL, "Invalid item barcode", show);
+    soundBeep();
     return;
   }
 
@@ -875,6 +883,7 @@ function setLcSortStat(tr) {
     tdcall.addClass("lcnext");
   } else {
     tdcall.addClass("lcprev");
+    soundBeep();
   }
 }
 
