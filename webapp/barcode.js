@@ -135,10 +135,12 @@ function initDialogs() {
       "Done" : function() {
         dialog.dialog("close");
         $("#gsheetdiv").show();
+        $("#beepdiv").show();
       }
     },
     close : function(event, ui) {
       $("#gsheetdiv").show();
+      $("#beepdiv").show();
     }
   });
 
@@ -409,6 +411,7 @@ function getCurrentRow() {
 function barcodeDialog() {
   //Hide non modal buttons
   $("#gsheetdiv").hide();
+  $("#beepdiv").hide();
 
   //Show metadata for last scanned item
   var tr=getCurrentRow();
@@ -757,9 +760,11 @@ function parseResponse(barcode, json) {
   return resdata;
 }
 
-function soundBeep() {
-  if ($('#beep').is(":checked")) {
-    beep();
+function soundBeep(force) {
+  if (force || $('#beep').is(":checked")) {
+    frequency = $('#frequency').val();
+    volume = $('#volume').val();
+    beep(200, frequency, volume);
   }
 }
 
@@ -785,7 +790,7 @@ function processCodes(show) {
   //If barcode is invalid, mark with a status of "FAIL"
   if (!isValidBarcode(barcode)) {
     setRowStatus(tr, STAT_FAIL, "Invalid item barcode", show);
-    soundBeep();
+    soundBeep(false);
     return;
   }
 

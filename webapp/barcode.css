@@ -17,6 +17,13 @@ tr.processing td, tr.processing button, tr.processing th {
   color: red;
   display: inline-block;
 }
+#beeptdiv a {
+  border: thin solid red;
+  padding: 5px 10px;
+  margin: 5px 10px;
+  color: red;
+  display: inline-block;
+}
 #dialog-msg {
   display: none;
 }

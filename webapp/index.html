@@ -120,7 +120,14 @@ Author: Terry Brady, Georgetown University Libraries
 <!--
     <a id="exportGsheet" href="#">End Session - Export to Google Sheet</a>
 -->
-    <a><input type="checkbox" name="beep" id="beep" value="" class="text ui-widget-content ui-corner-all">&#128276;</a>
+  </span>
+  <span id='beepdiv'>
+    <a>
+    &#128276;<input type="checkbox" name="beep" id="beep" value="" class="text ui-widget-content ui-corner-all">
+    <input type="button" id="btn" value="Test Beep Sound" onClick="soundBeep(true)">
+    Pitch<input type="range" min="35" max="4000" value="440" id="frequency">
+    Volume<input type="range" step="1" min="0" max="100" value="50" id="volume">
+    </a>
   </span>
 <div>
 <table id='restable'>
