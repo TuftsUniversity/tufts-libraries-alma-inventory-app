@@ -29,6 +29,7 @@ tr.processing td, tr.processing button, tr.processing th {
 }
 #dialog-form {
   text-align: center;
+  font-size: 0.9em;
 }
 #message {
   color: red;
@@ -85,7 +86,7 @@ tr.odd td {border-top: thin dotted black;}
 td.even {background-color: #EEFFEE;}
 td.head {background-color: #EEEEFF;}
 td.num {text-align: right;}
-td, th {width: 100px;}
+td, th {width: 160px;}
 td.error {color: red;background-color: yellow;}
 td.title, th.title {width: 300px;}
 td.mod, th.mod {width: 200px;}
