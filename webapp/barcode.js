@@ -598,7 +598,7 @@ function setRowStatus(tr, status, status_msg, show) {
   tr.addClass(status);
   if (status_msg != null) tr.find("td.status_msg").text(status_msg);
   tr.addClass(status);
-  console.log('setRowStatus', status);
+  //console.log('setRowStatus', status);
   if (status != 'PASS') {
     soundBeep();
   }
@@ -796,10 +796,12 @@ function processCodes(show) {
 
   //Call the web service to get data for the barcode
   var url = API_REDIRECT + "?apipath="+encodeURIComponent(API_SERVICE)+"items&item_barcode="+barcode;
+
   $.getJSON(url, function(rawdata){
     var data = parseResponse(getBarcodeFromUrl(this.url), rawdata);
     var resbarcode = data["barcode"];
     var tr = $("#restable tr[barcode="+resbarcode+"]");
+
     for(key in data) {
       var val = data[key] == null ? "" : data[key];
       if (key == "bibLink" || key == "holdingLink") {
@@ -822,14 +824,27 @@ function processCodes(show) {
       updateRowStat(tr);
     });
     url = API_REDIRECT + "?apipath=" + encodeURIComponent(data["holdingLink"]);
-    $.getJSON(url, function(data){
-      if ((getValue(data, "suppress_from_publishing") == "true")) {
-        $("tr[holding_id=" + data["holding_id"] + "] td.hold_supp")
-          .text("X");
-        tr.addClass("hold_supp");
+    $.ajax({
+      url: url,
+      type: 'GET',
+      dataType: 'json',
+      success: function(data, textStatus, jqXHR) {
+        var headers = jqXHR.getAllResponseHeaders();
+        var headerMap = headersToMap(headers);
+        $("#apicalls").text('API calls remaining: ' + headerMap['x-exl-api-remaining']);
+
+        // Handle the JSON response
+        if ((getValue(data, "suppress_from_publishing") == "true")) {
+          $("tr[holding_id=" + data["holding_id"] + "] td.hold_supp")
+            .text("X");
+          tr.addClass("hold_supp");
+        }
+        tr.addClass("hold_check");
+        updateRowStat(tr);
+      },
+      error: function(xhr, status, error) {
+        // Handle errors
       }
-      tr.addClass("hold_check");
-      updateRowStat(tr);
     });
     setLcSortStat(tr);
 
@@ -847,6 +862,23 @@ function processCodes(show) {
     }
   });
 }
+
+
+function headersToMap(headerStr) {
+  // Convert the header string into an array
+  // of individual headers
+  const arr = headerStr.trim().split(/[\r\n]+/);
+  // Create a map of header names to values
+  const headerMap = {};
+  arr.forEach((line) => {
+    const parts = line.split(": ");
+    const header = parts.shift();
+    const value = parts.join(": ");
+    headerMap[header] = value;
+  });
+  return headerMap;
+}
+
 
 /*
  * Evaluate the call number sort of an item based on the previous row that had been added to this table.
@@ -960,33 +992,43 @@ function populateLibs() {
     .end();
 
   var url = API_REDIRECT + "?apipath="+encodeURIComponent(API_SERVICE)+"conf/libraries";
-  $.getJSON(url, function(json){
-    var resdata = {}
-    if ('errorsExist' in json) {
-      var status_msg = "--";
-      var errorList = getArray(json, "errorList");
-      var errorArr = ('error' in errorList) ? errorList["error"] : [];
-      if (errorArr.length > 0) {
-        var error = errorArr[0];
-        status_msg = getValueWithDef(error, 'errorCode', "--") + ": "
-        status_msg += getValueWithDef(error, 'errorMessage', "--");
-      }
-      console.error(status_msg);
-    } else {
-      var libs = getArray(json, 'library');
-      for (let lib of libs) {
-        //console.log('lib=' + JSON.stringify(lib.name));
-        $('#libSelected').append($('<option>', { 
-            value: lib.code,
-            text : lib.name
-        }));
-      }
-      $("#libSelected").val($("#location option:first").val()).change();
-    }
-  }).fail(function() {
-    console.log('Failed to load libraries');
-  });
 
+  $.ajax({
+    url: url,
+    type: 'GET',
+    dataType: 'json',
+    success: function(json, textStatus, jqXHR) {
+      var headers = jqXHR.getAllResponseHeaders();
+      var headerMap = headersToMap(headers);
+      $("#apicalls").text('API calls remaining: ' + headerMap['x-exl-api-remaining']);
+
+      if ('errorsExist' in json) {
+        var status_msg = "--";
+        var errorList = getArray(json, "errorList");
+        var errorArr = ('error' in errorList) ? errorList["error"] : [];
+        if (errorArr.length > 0) {
+          var error = errorArr[0];
+          status_msg = getValueWithDef(error, 'errorCode', "--") + ": "
+          status_msg += getValueWithDef(error, 'errorMessage', "--");
+        }
+        console.error(status_msg);
+      } else {
+        var libs = getArray(json, 'library');
+        for (let lib of libs) {
+          //console.log('lib=' + JSON.stringify(lib.name));
+          $('#libSelected').append($('<option>', { 
+              value: lib.code,
+              text : lib.name
+          }));
+        }
+        $("#libSelected").val($("#location option:first").val()).change();
+      }
+    },
+    error: function(xhr, status, error) {
+      // Handle errors
+      console.log('Failed to load libraries');
+    }
+  });
 
 }
 
@@ -999,32 +1041,44 @@ function populateLocs() {
 
   let libId = $('#libSelected option:selected').val();
   var url = API_REDIRECT + "?apipath="+encodeURIComponent(API_SERVICE)+"conf/libraries/" + libId + "/locations";
-  $.getJSON(url, function(json){
-    var resdata = {}
-    if ('errorsExist' in json) {
-      var status_msg = "--";
-      var errorList = getArray(json, "errorList");
-      var errorArr = ('error' in errorList) ? errorList["error"] : [];
-      if (errorArr.length > 0) {
-        var error = errorArr[0];
-        status_msg = getValueWithDef(error, 'errorCode', "--") + ": "
-        status_msg += getValueWithDef(error, 'errorMessage', "--");
-      }
-      console.error(status_msg);
-    } else {
-      var locs = getArray(json, 'location');
-      for (let loc of locs) {
-        $('#locSelected').append($('<option>', { 
-            value: loc.code,
-            text : loc.name + ' (' + loc.code + ')'
-        }));
-      }
+
+  $.ajax({
+    url: url,
+    type: 'GET',
+    dataType: 'json',
+    success: function(json, textStatus, jqXHR) {
+      var headers = jqXHR.getAllResponseHeaders();
+      var headerMap = headersToMap(headers);
+      $("#apicalls").text('API calls remaining: ' + headerMap['x-exl-api-remaining']);
+
+      if ('errorsExist' in json) {
+        var status_msg = "--";
+        var errorList = getArray(json, "errorList");
+        var errorArr = ('error' in errorList) ? errorList["error"] : [];
+        if (errorArr.length > 0) {
+          var error = errorArr[0];
+          status_msg = getValueWithDef(error, 'errorCode', "--") + ": "
+          status_msg += getValueWithDef(error, 'errorMessage', "--");
+        }
+        console.error(status_msg);
+      } else {
+        var locs = getArray(json, 'location');
+        for (let loc of locs) {
+          $('#locSelected').append($('<option>', { 
+              value: loc.code,
+              text : loc.name + ' (' + loc.code + ')'
+          }));
+        }
   
-      $("#locSelected").val($("#location option:first").val()).change();
+        $("#locSelected").val($("#location option:first").val()).change();
+      }
+    },
+    error: function(xhr, status, error) {
+      // Handle errors
+      console.log('Failed to load locations');
     }
-  }).fail(function() {
-    console.log('Failed to load locations');
   });
+
 }
 
 

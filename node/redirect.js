@@ -86,6 +86,8 @@ app.get('/org/:org/redirect.js*', async (req, res) => {
         }
       }
     )
+    var apicalls = ret.headers['x-exl-api-remaining'];
+    res.set('x-exl-api-remaining', apicalls);
     res.json(ret.data);
     
   } catch (error) {
