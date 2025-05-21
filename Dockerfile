@@ -1,14 +1,14 @@
-FROM node:8
+FROM node:21
 
 RUN apt update
 RUN uname -a
 #RUN apt search openjdk-8-jdk-headless
-RUN apt install -y openjdk-8-jdk-headless
-ENV JAVA_HOME=/usr/lib/jvm/java-1.8-openjdk
-ENV PATH="$JAVA_HOME/bin:${PATH}"
+#RUN apt install -y openjdk-8-jdk-headless
+#ENV JAVA_HOME=/usr/lib/jvm/java-1.8-openjdk
+#ENV PATH="$JAVA_HOME/bin:${PATH}"
 
-RUN java -version
-RUN javac -version
+#RUN java -version
+#RUN javac -version
 
 # Create app directory
 WORKDIR /usr/src/app

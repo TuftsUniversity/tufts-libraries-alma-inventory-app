@@ -6,7 +6,9 @@ function deweyCallClass() {
 // returns a "normalized" call number
 deweyCallClass.prototype.returnNormLcCall = function(call_number) {
   //Insert ! when lowercase letter comes after number
-  var init = call_number.replace(/([0-9])(?=[a-z])/,'$1!');
+  //var init = call_number.replace(/([0-9])(?=[a-z])/,'$1!');
+  //Insert ! when any (case) letter comes after number
+  var init = call_number.replace(/([0-9])(?=[a-zA-Z])/,'$1!');
 
   //make all characters lowercase... sort works better this way for dewey...
   init = init.toLowerCase();
