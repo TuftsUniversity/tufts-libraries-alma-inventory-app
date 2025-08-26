@@ -8,5 +8,7 @@ include 'Alma.php';
 $ALMA = new Alma();
 header("Content-type: application/json");
 $ALMA->getRequest($_GET);
+// after $url is constructed:
+error_log('Proxy URL: ' . preg_replace('/apikey=[^&]+/', 'apikey=REDACTED', $url));
 
 ?>
