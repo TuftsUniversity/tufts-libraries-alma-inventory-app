@@ -1,5 +1,5 @@
 /*
-Barcode Scanning Inventory ? no Google Sheets dependency
+Barcode Scanning Inventory – no Google Sheets dependency
 - CSV is built locally and downloaded (no network)
 - No location dropdown enforcement
 */
@@ -115,20 +115,8 @@ $(document).ready(function(){
   colorInit();
   initDialogs();
   bindEvents();
-  //populateLibs(); // safe no-op if dropdowns not present
-  // safe no-op if dropdowns not present
-  // if ($('#libSelected').length) {
-  //  populateLibs();
-  //} else {
-  //  $(document).on('DOMNodeInserted', '#libSelected', populateLibs);
-  //}
-    // retry until #libSelected exists
-  let waitForLib = setInterval(function() {
-    if ($('#libSelected').length) {
-      clearInterval(waitForLib);
-      populateLibs();
-    }
-  }, 100);
+  populateLibs(); // safe no-op if dropdowns not present
+
   var s = $("#test").val();
   if (s) {
     loadDemonstrationBarcodes(s);
@@ -537,14 +525,8 @@ function parseResponse(barcode, json) {
 
     var itemData = getArray(json, "item_data");
     var loc = getArrayValue(itemData, "location", "value");
-   
-    
-    var tempLoc = (holdingData.temp_location && holdingData.temp_location.desc && holdingData.in_temp_location == true) 
-                ? holdingData.temp_location.desc 
-                : "";
+    var tempLoc = getArrayValue(holdingData, "temp_location", "");
 
-        
-   
     var process = getArrayValue(itemData, "process_type", "value")
       .replace(/_/g," ")
       .replace(/WORK ORDER.*/,"Work Order");
@@ -565,13 +547,6 @@ function parseResponse(barcode, json) {
     }
 
     // Location/temporary location checks intentionally removed
-    //let locSelected = $('#locSelected option:selected').val();
-    //if (!LOC_REGEX.test(loc)) {
-    let locSelected = $('#locSelected option:selected').val();
-    if (locSelected != loc) {
-      status = (status == "PASS") ? "PULL-LOC" : "PULL-MULT";
-      status_msg += LOC_MSG;
-    }
 
     if (process == "LOAN") {
       status = (status == "PASS") ? "PULL-DUE" : "PULL-MULT";
@@ -585,11 +560,6 @@ function parseResponse(barcode, json) {
     } else if (process != "") {
       status = (status == "PASS") ? "PULL-STAT" : "PULL-MULT";
       status_msg += "Item has a process status. ";
-    }
-
-    if (tempLoc != "") {
-      status = (status == "PASS" || status == "PULL-LOC") ? "PULL-LOC" : "PULL-MULT";
-      status_msg += "Item has a temp location. ";
     }
 
     resdata = {
@@ -784,9 +754,8 @@ function mydialog(title, mymessage, func) {
 function populateLibs() {
   if (!$('#libSelected').length) return;
   $('#libSelected').find('option').remove().end();
- 
+
   var url = API_REDIRECT + "?apipath=" + encodeURIComponent(API_SERVICE) + "conf/libraries";
-  //alert(url);
   $.ajax({
     url: url, type: 'GET', dataType: 'json',
     success: function(json, textStatus, jqXHR) {
@@ -805,7 +774,6 @@ function populateLibs() {
           $('#libSelected').append($('<option>', { value: lib.code, text: lib.name }));
         }
         if ($('#libSelected option').length) $('#libSelected').prop('selectedIndex', 0).trigger('change');
-        $('#libSelected').on('change', function() { populateLocs(); } );    
       }
     },
     error: function(){ console.log('Failed to load libraries'); }
@@ -814,14 +782,11 @@ function populateLibs() {
 
 // Only runs if #locSelected exists
 function populateLocs() {
- 
   if (!$('#locSelected').length) return;
   $('#locSelected').find('option').remove().end();
 
   let libId = $('#libSelected option:selected').val();
   var url = API_REDIRECT + "?apipath=" + encodeURIComponent(API_SERVICE) + "conf/libraries/" + libId + "/locations";
-  
-  
   $.ajax({
     url: url, type: 'GET', dataType: 'json',
     success: function(json, textStatus, jqXHR) {
@@ -845,5 +810,4 @@ function populateLocs() {
     error: function(){ console.log('Failed to load locations'); }
   });
 }
-
 

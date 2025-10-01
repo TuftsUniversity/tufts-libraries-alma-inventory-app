@@ -1,5 +1,8 @@
 ; Path to the config file containing the following settings
-; ALMA_APIKEY = ...
+; ALMA_APIKEY=l8xxf7ddb4589913458b957be6115c7b0419
+; apikey=l8xxf7ddb4589913458b957be6115c7b0419
+; ALMA_CONF_APIKEY=l8xx2bdedf1911e446cdb90f54dc0bcfade0
+
 
 ; These setting reference a file that may not exist within the deployed code directory
 proppath = /var/data/local.prop
