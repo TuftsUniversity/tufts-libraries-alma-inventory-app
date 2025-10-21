@@ -568,7 +568,7 @@ function parseResponse(barcode, json) {
     //let locSelected = $('#locSelected option:selected').val();
     //if (!LOC_REGEX.test(loc)) {
     let locSelected = $('#locSelected option:selected').val();
-    if (locSelected != loc) {
+    if (locSelected != loc || (tempLoc != "" && locSelected != tempLoc)) {
       status = (status == "PASS") ? "PULL-LOC" : "PULL-MULT";
       status_msg += LOC_MSG;
     }
